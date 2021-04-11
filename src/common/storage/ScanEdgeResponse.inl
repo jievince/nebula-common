@@ -51,8 +51,7 @@ struct TccStructTraits<nebula::ScanEdgeResponse> {
 
 }   // namespace detail
 
-inline constexpr apache::thrift::protocol::TType
-Cpp2Ops<::nebula::ScanEdgeResponse>::thriftType() {
+inline constexpr apache::thrift::protocol::TType Cpp2Ops<::nebula::ScanEdgeResponse>::thriftType() {
     return apache::thrift::protocol::T_STRUCT;
 }
 
@@ -62,8 +61,7 @@ uint32_t Cpp2Ops<::nebula::ScanEdgeResponse>::write(Protocol* proto,
     uint32_t xfer = 0;
     xfer += proto->writeStructBegin("nebula::ScanEdgeResponse");
     xfer += proto->writeFieldBegin("result", apache::thrift::protocol::T_STRUCT, 1);
-    xfer += ::apache::thrift::Cpp2Ops<nebula::ResponseCommon>::write(proto,
-                                                                                      &obj->result);
+    xfer += ::apache::thrift::Cpp2Ops<nebula::ResponseCommon>::write(proto, &obj->result);
     xfer += proto->writeFieldEnd();
     xfer += proto->writeFieldBegin("edge_data", apache::thrift::protocol::T_STRUCT, 2);
     xfer += ::apache::thrift::Cpp2Ops<nebula::DataSet>::write(proto, &obj->edgeData);
@@ -185,33 +183,34 @@ _loop:
 }
 
 template <class Protocol>
-uint32_t Cpp2Ops<::nebula::ScanEdgeResponse>::serializedSize(Protocol const* proto,
-                                          ::nebula::ScanEdgeResponse const* obj) {
+uint32_t Cpp2Ops<::nebula::ScanEdgeResponse>::serializedSize(
+    Protocol const* proto,
+    ::nebula::ScanEdgeResponse const* obj) {
     uint32_t xfer = 0;
     xfer += proto->serializedStructSize("nebula::ScanEdgeResponse");
     xfer += proto->serializedFieldSize("result", apache::thrift::protocol::T_STRUCT, 1);
-    xfer += ::apache::thrift::Cpp2Ops<nebula::ResponseCommon>::serializedSize(
-        proto, &obj->result);
+    xfer += ::apache::thrift::Cpp2Ops<nebula::ResponseCommon>::serializedSize(proto, &obj->result);
     xfer += proto->serializedFieldSize("edge_data", apache::thrift::protocol::T_STRUCT, 2);
     xfer += ::apache::thrift::Cpp2Ops<nebula::DataSet>::serializedSize(proto, &obj->edgeData);
     xfer += proto->serializedFieldSize("has_next", apache::thrift::protocol::T_BOOL, 3);
     xfer += proto->serializedSizeBool(obj->hasNext);
     if (obj->nextCursor != nullptr) {
         xfer += proto->serializedFieldSize("next_cursor", apache::thrift::protocol::T_STRING, 4);
-        xfer += proto->serializedSizeBinary(obj->nextCursor);
+        xfer += proto->serializedSizeBinary(*obj->nextCursor);
     }
     xfer += proto->serializedSizeStop();
     return xfer;
 }
 
 template <class Protocol>
-uint32_t Cpp2Ops<::nebula::ScanEdgeResponse>::serializedSizeZC(Protocol const* proto,
-                                            ::nebula::ScanEdgeResponse const* obj) {
+uint32_t Cpp2Ops<::nebula::ScanEdgeResponse>::serializedSizeZC(
+    Protocol const* proto,
+    ::nebula::ScanEdgeResponse const* obj) {
     uint32_t xfer = 0;
     xfer += proto->serializedStructSize("ScanEdgeResponse");
     xfer += proto->serializedFieldSize("result", apache::thrift::protocol::T_STRUCT, 1);
-    xfer += ::apache::thrift::Cpp2Ops<nebula::ResponseCommon>::serializedSizeZC(
-        proto, &obj->result);
+    xfer +=
+        ::apache::thrift::Cpp2Ops<nebula::ResponseCommon>::serializedSizeZC(proto, &obj->result);
     xfer += proto->serializedFieldSize("edge_data", apache::thrift::protocol::T_STRUCT, 2);
     xfer += ::apache::thrift::Cpp2Ops<nebula::DataSet>::serializedSizeZC(proto, &obj->edgeData);
     xfer += proto->serializedFieldSize("has_next", apache::thrift::protocol::T_BOOL, 3);

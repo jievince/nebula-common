@@ -62,8 +62,7 @@ uint32_t Cpp2Ops<::nebula::ScanVertexResponse>::write(Protocol* proto,
     uint32_t xfer = 0;
     xfer += proto->writeStructBegin("nebula::ScanVertexResponse");
     xfer += proto->writeFieldBegin("result", apache::thrift::protocol::T_STRUCT, 1);
-    xfer += ::apache::thrift::Cpp2Ops<nebula::ResponseCommon>::write(proto,
-                                                                                      &obj->result);
+    xfer += ::apache::thrift::Cpp2Ops<nebula::ResponseCommon>::write(proto, &obj->result);
     xfer += proto->writeFieldEnd();
     xfer += proto->writeFieldBegin("vertex_data", apache::thrift::protocol::T_STRUCT, 2);
     xfer += ::apache::thrift::Cpp2Ops<nebula::DataSet>::write(proto, &obj->vertexData);
@@ -186,33 +185,34 @@ _loop:
 }
 
 template <class Protocol>
-uint32_t Cpp2Ops<::nebula::ScanVertexResponse>::serializedSize(Protocol const* proto,
-                                            ::nebula::ScanVertexResponse const* obj) {
+uint32_t Cpp2Ops<::nebula::ScanVertexResponse>::serializedSize(
+    Protocol const* proto,
+    ::nebula::ScanVertexResponse const* obj) {
     uint32_t xfer = 0;
     xfer += proto->serializedStructSize("nebula::ScanVertexResponse");
     xfer += proto->serializedFieldSize("result", apache::thrift::protocol::T_STRUCT, 1);
-    xfer += ::apache::thrift::Cpp2Ops<nebula::ResponseCommon>::serializedSize(
-        proto, &obj->result);
+    xfer += ::apache::thrift::Cpp2Ops<nebula::ResponseCommon>::serializedSize(proto, &obj->result);
     xfer += proto->serializedFieldSize("vertex_data", apache::thrift::protocol::T_STRUCT, 2);
     xfer += ::apache::thrift::Cpp2Ops<nebula::DataSet>::serializedSize(proto, &obj->vertexData);
     xfer += proto->serializedFieldSize("has_next", apache::thrift::protocol::T_BOOL, 3);
     xfer += proto->serializedSizeBool(obj->hasNext);
     if (obj->nextCursor != nullptr) {
         xfer += proto->serializedFieldSize("next_cursor", apache::thrift::protocol::T_STRING, 4);
-        xfer += proto->serializedSizeBinary(obj->nextCursor);
+        xfer += proto->serializedSizeBinary(*obj->nextCursor);
     }
     xfer += proto->serializedSizeStop();
     return xfer;
 }
 
 template <class Protocol>
-uint32_t Cpp2Ops<::nebula::ScanVertexResponse>::serializedSizeZC(Protocol const* proto,
-                                              ::nebula::ScanVertexResponse const* obj) {
+uint32_t Cpp2Ops<::nebula::ScanVertexResponse>::serializedSizeZC(
+    Protocol const* proto,
+    ::nebula::ScanVertexResponse const* obj) {
     uint32_t xfer = 0;
     xfer += proto->serializedStructSize("ScanVertexResponse");
     xfer += proto->serializedFieldSize("result", apache::thrift::protocol::T_STRUCT, 1);
-    xfer += ::apache::thrift::Cpp2Ops<nebula::ResponseCommon>::serializedSizeZC(
-        proto, &obj->result);
+    xfer +=
+        ::apache::thrift::Cpp2Ops<nebula::ResponseCommon>::serializedSizeZC(proto, &obj->result);
     xfer += proto->serializedFieldSize("vertex_data", apache::thrift::protocol::T_STRUCT, 2);
     xfer += ::apache::thrift::Cpp2Ops<nebula::DataSet>::serializedSizeZC(proto, &obj->vertexData);
     xfer += proto->serializedFieldSize("has_next", apache::thrift::protocol::T_BOOL, 3);
