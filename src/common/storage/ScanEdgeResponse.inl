@@ -119,6 +119,7 @@ _readField_has_next : {
         goto _loop;
     }
 _readField_next_cursor : {
+    obj->nextCursor = std::make_unique<std::string>();
     proto->readBinary(*obj->nextCursor);
     // this->__isset.next_cursor = true;
 }
