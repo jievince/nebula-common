@@ -16,7 +16,7 @@
 namespace nebula {
 namespace storage {
 
-typedef ErrorOr<cpp2::ErrorCode, std::string> ErrOrVal;
+typedef ErrorOr<nebula::ErrorCode, std::string> ErrOrVal;
 
 /**
  * A wrapper class for InternalStorageServiceAsyncClient thrift API
@@ -32,7 +32,7 @@ public:
         : Parent(ioThreadPool, metaClient) {}
     virtual ~InternalStorageClient() = default;
 
-    folly::SemiFuture<cpp2::ErrorCode> forwardTransaction(int64_t txnId,
+    folly::SemiFuture<nebula::ErrorCode> forwardTransaction(int64_t txnId,
                                                           GraphSpaceID spaceId,
                                                           PartitionID partId,
                                                           std::string&& data,
@@ -50,7 +50,7 @@ protected:
                                 GraphSpaceID spaceId,
                                 PartitionID partId,
                                 std::string&& data,
-                                folly::Promise<cpp2::ErrorCode> p,
+                                folly::Promise<nebula::ErrorCode> p,
                                 folly::EventBase* evb);
 
     void getValueImpl(GraphSpaceID spaceId,

@@ -15,6 +15,11 @@ namespace py nebula2.storage
 include "common.thrift"
 include "meta.thrift"
 
+cpp_include "common/storage/PartitionResult.inl"
+cpp_include "common/storage/ResponseCommon.inl"
+cpp_include "common/storage/ScanEdgeResponse.inl"
+cpp_include "common/storage/ScanVertexResponse.inl"
+
 /*
  *
  *  Note: In order to support multiple languages, all strings
@@ -101,7 +106,7 @@ struct PartitionResult {
     2: required common.PartitionID  part_id,
     // Only valid when code is E_LEADER_CHANAGED.
     3: optional common.HostAddr     leader,
-}
+} (cpp.type = "nebula::PartitionResult")
 
 
 struct ResponseCommon {
@@ -109,7 +114,7 @@ struct ResponseCommon {
     1: required list<PartitionResult>   failed_parts,
     // Query latency from storage service
     2: required i32                     latency_in_us,
-}
+} (cpp.type = "nebula::ResponseCommon")
 
 
 /*
@@ -628,7 +633,7 @@ struct ScanVertexResponse {
     3: bool                                 has_next,
     // next start key of scan, only valid when has_next is true
     4: optional binary                      next_cursor,
-}
+} (cpp.type = "nebula::ScanVertexResponse")
 
 struct ScanEdgeRequest {
     1: common.GraphSpaceID                  space_id,
@@ -658,7 +663,7 @@ struct ScanEdgeResponse {
     3: bool                                 has_next,
     // next start key of scan, only valid when has_next is true
     4: optional binary                      next_cursor,
-}
+} (cpp.type = "nebula::ScanEdgeResponse")
 
 struct TaskPara {
     1: common.GraphSpaceID                  space_id,
