@@ -20,9 +20,9 @@ TEST(ResponseEncodDecodeTest, Basic) {
     {
         std::vector<PartitionResult> prs;
         prs.emplace_back(PartitionResult{});
-        prs.emplace_back(PartitionResult{ErrorCode::SUCCEEDED, 174});
-        prs.emplace_back(
-            PartitionResult{ErrorCode::E_LEADER_CHANGED, 174, std::unique_ptr<nebula::HostAddr>()});
+        prs.emplace_back(PartitionResult{storage::ErrorCode::SUCCEEDED, 174});
+        prs.emplace_back(PartitionResult{
+            storage::ErrorCode::E_LEADER_CHANGED, 174, std::unique_ptr<nebula::HostAddr>()});
         for (const auto &pr : prs) {
             std::string buf;
             buf.reserve(128);

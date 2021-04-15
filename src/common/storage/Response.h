@@ -4,8 +4,8 @@
  * attached with Common Clause Condition 1.0, found in the LICENSES directory.
  */
 
-#ifndef COMMON_GRAPH_RESPONSE_H
-#define COMMON_GRAPH_RESPONSE_H
+#ifndef COMMON_STORAGE_RESPONSE_H
+#define COMMON_STORAGE_RESPONSE_H
 
 #include <algorithm>
 #include <memory>
@@ -16,6 +16,7 @@
 #include "common/datatypes/HostAddr.h"
 
 namespace nebula {
+namespace storage {
 
 enum class ErrorCode {
     SUCCEEDED = 0,
@@ -89,9 +90,10 @@ enum class ErrorCode {
 
     E_UNKNOWN = -100,
 };
+}   // namespace storage
 
 template <typename T>
-bool inline checkPointer(const T *lhs, const T *rhs) {
+bool inline isSame(const T *lhs, const T *rhs) {
     if (lhs == rhs) {
         return true;
     } else if (lhs != nullptr && rhs != nullptr) {
@@ -103,7 +105,7 @@ bool inline checkPointer(const T *lhs, const T *rhs) {
 
 struct PartitionResult {
     void __clear() {
-        code = ErrorCode::SUCCEEDED;
+        code = storage::ErrorCode::SUCCEEDED;
         partId = -1;
         leader = nullptr;
     }
@@ -119,7 +121,7 @@ struct PartitionResult {
         if (partId != rhs.partId) {
             return false;
         }
-        return checkPointer(leader.get(), rhs.leader.get());
+        return isSame(leader.get(), rhs.leader.get());
     }
 
     bool operator<(const PartitionResult &rhs) const {
@@ -140,7 +142,7 @@ struct PartitionResult {
         return false;
     }
 
-    ErrorCode code;
+    storage::ErrorCode code;
     int32_t partId;
     std::unique_ptr<nebula::HostAddr> leader{nullptr};
 };
@@ -215,6 +217,153 @@ struct ScanVertexResponse {
     std::unique_ptr<std::string> nextCursor{nullptr};
 };
 
+// std::ostream& operator<<(std::ostream& os, storage::ErrorCode code) {
+//     switch (code) {
+//         case storage::ErrorCode::SUCCEEDED:
+//             os << "SUCCEEDED";
+//             break;
+//         case storage::ErrorCode::E_DISCONNECTED:
+//             os << "E_DISCONNECTED";
+//             break;
+//         case storage::ErrorCode::E_FAILED_TO_CONNECT:
+//             os << "E_FAILED_TO_CONNECT";
+//             break;
+//         case storage::ErrorCode::E_RPC_FAILURE:
+//             os << "E_RPC_FAILURE";
+//             break;
+//         case storage::ErrorCode::E_LEADER_CHANGED:
+//             os << "E_LEADER_CHANGED";
+//             break;
+//         case storage::ErrorCode::E_KEY_HAS_EXISTS:
+//             os << "E_KEY_HAS_EXISTS";
+//             break;
+//         case storage::ErrorCode::E_SPACE_NOT_FOUND:
+//             os << "E_SPACE_NOT_FOUND";
+//             break;
+//         case storage::ErrorCode::E_PART_NOT_FOUND:
+//             os << "E_PART_NOT_FOUND";
+//             break;
+//         case storage::ErrorCode::E_KEY_NOT_FOUND:
+//             os << "E_KEY_NOT_FOUND";
+//             break;
+//         case storage::ErrorCode::E_CONSENSUS_ERROR:
+//             os << "E_CONSENSUS_ERROR";
+//             break;
+//         case storage::ErrorCode::E_DATA_TYPE_MISMATCH:
+//             os << "E_DATA_TYPE_MISMATCH";
+//             break;
+//         case storage::ErrorCode::E_INVALID_FIELD_VALUE:
+//             os << "E_INVALID_FIELD_VALUE";
+//             break;
+//         case storage::ErrorCode::E_REBUILD_INDEX_FAILED:
+//             os << "E_REBUILD_INDEX_FAILED";
+//             break;
+//         case storage::ErrorCode::E_INVALID_OPERATION:
+//             os << "E_INVALID_OPERATION";
+//             break;
+//         case storage::ErrorCode::E_NOT_NULLABLE:
+//             os << "E_NOT_NULLABLE";
+//             break;
+//         case storage::ErrorCode::E_FIELD_UNSET:
+//             os << "E_FIELD_UNSET";
+//             break;
+//         case storage::ErrorCode::E_OUT_OF_RANGE:
+//             os << "E_OUT_OF_RANGE";
+//             break;
+//         case storage::ErrorCode::E_ATOMIC_OP_FAILED:
+//             os << "E_ATOMIC_OP_FAILED";
+//             break;
+//         case storage::ErrorCode::E_DATA_CONFLICT_ERROR:
+//             os << "E_DATA_CONFLICT_ERROR";
+//             break;
+//         case storage::ErrorCode::E_EDGE_PROP_NOT_FOUND:
+//             os << "E_EDGE_PROP_NOT_FOUND";
+//             break;
+//         case storage::ErrorCode::E_TAG_PROP_NOT_FOUND:
+//             os << "E_TAG_PROP_NOT_FOUND";
+//             break;
+//         case storage::ErrorCode::E_IMPROPER_DATA_TYPE:
+//             os << "E_IMPROPER_DATA_TYPE";
+//             break;
+//         case storage::ErrorCode::E_EDGE_NOT_FOUND:
+//             os << "E_EDGE_NOT_FOUND";
+//             break;
+//         case storage::ErrorCode::E_TAG_NOT_FOUND:
+//             os << "E_TAG_NOT_FOUND";
+//             break;
+//         case storage::ErrorCode::E_INVALID_SPACEVIDLEN:
+//             os << "E_INVALID_SPACEVIDLEN";
+//             break;
+//         case storage::ErrorCode::E_INDEX_NOT_FOUND:
+//             os << "E_INDEX_NOT_FOUND";
+//             break;
+//         case storage::ErrorCode::E_INVALID_FILTER:
+//             os << "E_INVALID_FILTER";
+//             break;
+//         case storage::ErrorCode::E_INVALID_UPDATER:
+//             os << "E_INVALID_UPDATER";
+//             break;
+//         case storage::ErrorCode::E_INVALID_STORE:
+//             os << "E_INVALID_STORE";
+//             break;
+//         case storage::ErrorCode::E_INVALID_PEER:
+//             os << "E_INVALID_PEER";
+//             break;
+//         case storage::ErrorCode::E_RETRY_EXHAUSTED:
+//             os << "E_RETRY_EXHAUSTED";
+//             break;
+//         case storage::ErrorCode::E_TRANSFER_LEADER_FAILED:
+//             os << "E_TRANSFER_LEADER_FAILED";
+//             break;
+//         case storage::ErrorCode::E_INVALID_STAT_TYPE:
+//             os << "E_INVALID_STAT_TYPE";
+//             break;
+//         case storage::ErrorCode::E_INVALID_VID:
+//             os << "E_INVALID_VID";
+//             break;
+//         case storage::ErrorCode::E_NO_TRANSFORMED:
+//             os << "E_NO_TRANSFORMED";
+//             break;
+//         case storage::ErrorCode::E_LOAD_META_FAILED:
+//             os << "E_LOAD_META_FAILED";
+//             break;
+//         case storage::ErrorCode::E_FAILED_TO_CHECKPOINT:
+//             os << "E_FAILED_TO_CHECKPOINT";
+//             break;
+//         case storage::ErrorCode::E_CHECKPOINT_BLOCKED:
+//             os << "E_CHECKPOINT_BLOCKED";
+//             break;
+//         case storage::ErrorCode::E_BACKUP_FAILED:
+//             os << "E_BACKUP_FAILED";
+//             break;
+//         case storage::ErrorCode::E_PARTIAL_RESULT:
+//             os << "E_PARTIAL_RESULT";
+//             break;
+//         case storage::ErrorCode::E_FILTER_OUT:
+//             os << "E_FILTER_OUT";
+//             break;
+//         case storage::ErrorCode::E_INVALID_DATA:
+//             os << "E_INVALID_DATA";
+//             break;
+//         case storage::ErrorCode::E_MUTATE_EDGE_CONFLICT:
+//             os << "E_MUTATE_EDGE_CONFLICT";
+//             break;
+//         case storage::ErrorCode::E_OUTDATED_LOCK:
+//             os << "E_OUTDATED_LOCK";
+//             break;
+//         case storage::ErrorCode::E_INVALID_TASK_PARA:
+//             os << "E_INVALID_TASK_PARA";
+//             break;
+//         case storage::ErrorCode::E_USER_CANCEL:
+//             os << "E_USER_CANCEL";
+//             break;
+//         case storage::ErrorCode::E_UNKNOWN:
+//             os << "E_UNKNOWN";
+//             break;
+//     }
+//     return os;
+// }
+
 }   // namespace nebula
 
-#endif   // COMMON_GRAPH_RESPONSE_H
+#endif   // COMMON_STORAGE_RESPONSE_H

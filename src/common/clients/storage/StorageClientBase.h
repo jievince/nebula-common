@@ -67,13 +67,13 @@ public:
         return totalReqsSent_ == 0 ? 0 : (totalReqsSent_ - failedReqs_) * 100 / totalReqsSent_;
     }
 
-    void emplaceFailedPart(PartitionID partId, nebula::ErrorCode errorCode) {
+    void emplaceFailedPart(PartitionID partId, nebula::storage::ErrorCode errorCode) {
         std::lock_guard<std::mutex> g(*lock_);
         failedParts_.emplace(partId, errorCode);
     }
 
     void appendFailedParts(const std::vector<PartitionID> &partsId,
-                           nebula::ErrorCode errorCode) {
+                           nebula::storage::ErrorCode errorCode) {
         std::lock_guard<std::mutex> g(*lock_);
         failedParts_.reserve(failedParts_.size() + partsId.size());
         for (const auto &partId : partsId) {
@@ -87,7 +87,7 @@ public:
     }
 
     // Not thread-safe.
-    const std::unordered_map<PartitionID, nebula::ErrorCode>& failedParts() const {
+    const std::unordered_map<PartitionID, nebula::storage::ErrorCode>& failedParts() const {
         return failedParts_;
     }
 
@@ -107,7 +107,7 @@ private:
     size_t failedReqs_{0};
 
     Result result_{Result::ALL_SUCCEEDED};
-    std::unordered_map<PartitionID, nebula::ErrorCode> failedParts_;
+    std::unordered_map<PartitionID, nebula::storage::ErrorCode> failedParts_;
     int32_t maxLatency_{0};
     std::vector<Response> responses_;
     std::vector<std::tuple<HostAddr, int32_t, int32_t>> hostLatency_;

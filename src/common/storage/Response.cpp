@@ -18,7 +18,7 @@ bool ScanEdgeResponse::operator==(const ScanEdgeResponse &rhs) const {
     if (hasNext != rhs.hasNext) {
         return false;
     }
-    return checkPointer(nextCursor.get(), rhs.nextCursor.get());
+    return isSame(nextCursor.get(), rhs.nextCursor.get());
 }
 
 bool ScanVertexResponse::operator==(const ScanVertexResponse &rhs) const {
@@ -31,7 +31,7 @@ bool ScanVertexResponse::operator==(const ScanVertexResponse &rhs) const {
     if (hasNext != rhs.hasNext) {
         return false;
     }
-    return checkPointer(nextCursor.get(), rhs.nextCursor.get());
+    return isSame(nextCursor.get(), rhs.nextCursor.get());
 }
 
 }  // namespace nebula

@@ -11,29 +11,29 @@ namespace nebula {
 namespace storage {
 
 template <typename T>
-nebula::ErrorCode extractErrorCode(T& tryResp) {
+nebula::storage::ErrorCode extractErrorCode(T& tryResp) {
     if (!tryResp.hasValue()) {
         LOG(ERROR) << tryResp.exception().what();
-        return nebula::ErrorCode::E_RPC_FAILURE;
+        return nebula::storage::ErrorCode::E_RPC_FAILURE;
     }
 
     auto& stResp = tryResp.value();
     if (!stResp.ok()) {
         switch (stResp.status().code()) {
             case Status::Code::kLeaderChanged:
-                return nebula::ErrorCode::E_LEADER_CHANGED;
+                return nebula::storage::ErrorCode::E_LEADER_CHANGED;
             default:
                 LOG(ERROR) << "not impl error transform: code="
                            << static_cast<int32_t>(stResp.status().code());
         }
-        return nebula::ErrorCode::E_UNKNOWN;
+        return nebula::storage::ErrorCode::E_UNKNOWN;
     }
 
     auto& failedPart = stResp.value().get_result().failedParts;
     for (auto& p : failedPart) {
         return p.code;
     }
-    return nebula::ErrorCode::SUCCEEDED;
+    return nebula::storage::ErrorCode::SUCCEEDED;
 }
 
 StatusOr<HostAddr> InternalStorageClient::getFuzzyLeader(GraphSpaceID spaceId,
@@ -41,13 +41,13 @@ StatusOr<HostAddr> InternalStorageClient::getFuzzyLeader(GraphSpaceID spaceId,
     return getLeader(spaceId, partId);
 }
 
-folly::SemiFuture<nebula::ErrorCode> InternalStorageClient::forwardTransaction(
+folly::SemiFuture<nebula::storage::ErrorCode> InternalStorageClient::forwardTransaction(
         int64_t txnId,
         GraphSpaceID spaceId,
         PartitionID partId,
         std::string&& data,
         folly::EventBase* evb) {
-    auto c = folly::makePromiseContract<nebula::ErrorCode>();
+    auto c = folly::makePromiseContract<nebula::storage::ErrorCode>();
     forwardTransactionImpl(txnId,
         spaceId, partId, std::move(data), std::move(c.first), evb);
     return std::move(c.second);
@@ -57,12 +57,12 @@ void InternalStorageClient::forwardTransactionImpl(int64_t txnId,
                                                    GraphSpaceID spaceId,
                                                    PartitionID partId,
                                                    std::string&& data,
-                                                   folly::Promise<nebula::ErrorCode> p,
+                                                   folly::Promise<nebula::storage::ErrorCode> p,
                                                    folly::EventBase* evb) {
     VLOG(1) << "forwardTransactionImpl txnId=" << txnId;
     auto statusOrLeader = getFuzzyLeader(spaceId, partId);
     if (!statusOrLeader.ok()) {
-        p.setValue(nebula::ErrorCode::E_SPACE_NOT_FOUND);
+        p.setValue(nebula::storage::ErrorCode::E_SPACE_NOT_FOUND);
         return;
     }
     HostAddr& dest = statusOrLeader.value();
@@ -83,7 +83,7 @@ void InternalStorageClient::forwardTransactionImpl(int64_t txnId,
         })
         .thenTry([=, p = std::move(p)](auto&& t) mutable {
             auto code = extractErrorCode(t);
-            if (code == nebula::ErrorCode::E_LEADER_CHANGED) {
+            if (code == nebula::storage::ErrorCode::E_LEADER_CHANGED) {
                 std::this_thread::sleep_for(std::chrono::milliseconds(500));
                 return forwardTransactionImpl(
                     txnId, spaceId, partId, std::move(data), std::move(p), evb);
@@ -100,7 +100,7 @@ folly::SemiFuture<ErrOrVal> InternalStorageClient::getValue(size_t vIdLen,
     auto srcVid = key.subpiece(sizeof(PartitionID), vIdLen);
     auto stPartId = metaClient_->partId(spaceId, srcVid.str());
     if (!stPartId.ok()) {
-        return nebula::ErrorCode::E_SPACE_NOT_FOUND;
+        return nebula::storage::ErrorCode::E_SPACE_NOT_FOUND;
     }
 
     auto c = folly::makePromiseContract<ErrOrVal>();
@@ -117,9 +117,9 @@ void InternalStorageClient::getValueImpl(GraphSpaceID spaceId,
     auto stLeaderHost = getFuzzyLeader(spaceId, partId);
     if (!stLeaderHost.ok()) {
         if (stLeaderHost.status().toString().find("partid")) {
-            p.setValue(nebula::ErrorCode::E_PART_NOT_FOUND);
+            p.setValue(nebula::storage::ErrorCode::E_PART_NOT_FOUND);
         } else {
-            p.setValue(nebula::ErrorCode::E_SPACE_NOT_FOUND);
+            p.setValue(nebula::storage::ErrorCode::E_SPACE_NOT_FOUND);
         }
         return;
     }
@@ -135,9 +135,9 @@ void InternalStorageClient::getValueImpl(GraphSpaceID spaceId,
 
     auto cb = [=, p = std::move(p)](auto&& t) mutable {
         auto code = extractErrorCode(t);
-        if (code == nebula::ErrorCode::SUCCEEDED) {
+        if (code == nebula::storage::ErrorCode::SUCCEEDED) {
             p.setValue(t.value().value().get_value());
-        } else if (code == nebula::ErrorCode::E_LEADER_CHANGED) {
+        } else if (code == nebula::storage::ErrorCode::E_LEADER_CHANGED) {
             // retry directly may easily get same error
             std::this_thread::sleep_for(std::chrono::milliseconds(500));
             return getValueImpl(spaceId, partId, std::move(key), std::move(p), evb);

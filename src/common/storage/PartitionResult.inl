@@ -60,7 +60,7 @@ uint32_t Cpp2Ops<::nebula::PartitionResult>::write(Protocol* proto,
     xfer += proto->writeFieldBegin("code", apache::thrift::protocol::T_I32, 1);
     xfer += ::apache::thrift::detail::pm::protocol_methods<
         ::apache::thrift::type_class::enumeration,
-        ::nebula::ErrorCode>::write(*proto, obj->code);
+        ::nebula::storage::ErrorCode>::write(*proto, obj->code);
     xfer += proto->writeFieldEnd();
     xfer += proto->writeFieldBegin("part_id", apache::thrift::protocol::T_I32, 2);
     xfer += ::apache::thrift::detail::pm::protocol_methods<
@@ -94,7 +94,7 @@ void Cpp2Ops<::nebula::PartitionResult>::read(Protocol* proto, ::nebula::Partiti
 _readField_code : {
     ::apache::thrift::detail::pm::protocol_methods<
         ::apache::thrift::type_class::enumeration,
-        ::nebula::ErrorCode>::read(*proto, obj->code);
+        ::nebula::storage::ErrorCode>::read(*proto, obj->code);
     isset_code = true;
 }
 
@@ -180,7 +180,7 @@ uint32_t Cpp2Ops<::nebula::PartitionResult>::serializedSize(Protocol const* prot
     xfer += proto->serializedFieldSize("code", apache::thrift::protocol::T_I32, 1);
     xfer += ::apache::thrift::detail::pm::protocol_methods<
         ::apache::thrift::type_class::enumeration,
-        ::nebula::ErrorCode>::serializedSize<false>(*proto, obj->code);
+        ::nebula::storage::ErrorCode>::serializedSize<false>(*proto, obj->code);
     xfer += proto->serializedFieldSize("part_id", apache::thrift::protocol::T_I32, 2);
     xfer += ::apache::thrift::detail::pm::protocol_methods<
         ::apache::thrift::type_class::integral,
@@ -203,7 +203,7 @@ uint32_t Cpp2Ops<::nebula::PartitionResult>::serializedSizeZC(
     xfer += proto->serializedFieldSize("code", apache::thrift::protocol::T_I32, 1);
     xfer += ::apache::thrift::detail::pm::protocol_methods<
         ::apache::thrift::type_class::enumeration,
-        ::nebula::ErrorCode>::serializedSize<false>(*proto, obj->code);
+        ::nebula::storage::ErrorCode>::serializedSize<false>(*proto, obj->code);
     xfer += proto->serializedFieldSize("part_id", apache::thrift::protocol::T_I32, 2);
     xfer += ::apache::thrift::detail::pm::protocol_methods<
         ::apache::thrift::type_class::integral,
