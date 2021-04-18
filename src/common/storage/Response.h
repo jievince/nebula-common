@@ -142,6 +142,40 @@ struct PartitionResult {
         return false;
     }
 
+    PartitionResult() {
+        code = storage::ErrorCode::SUCCEEDED;
+        partId = -1;
+        leader = nullptr;
+    }
+
+    PartitionResult(const PartitionResult& rhs) {
+        code = rhs.code;
+        partId = rhs.partId;
+        leader.reset(new HostAddr(*rhs.leader));
+    }
+
+    PartitionResult& operator=(const PartitionResult& rhs) {
+        if (this == &rhs) {
+            return *this;
+        }
+
+        code = rhs.code;
+        partId = rhs.partId;
+        leader.reset(new nebula::HostAddr(rhs.leader->host, rhs.leader->port));
+        return *this;
+    }
+
+    PartitionResult& operator=(PartitionResult&& rhs) {
+        if (this == &rhs) {
+            return *this;
+        }
+
+        code = rhs.code;
+        partId = rhs.partId;
+        leader.reset(rhs.leader.release());
+        return *this;
+    }
+
     storage::ErrorCode code;
     int32_t partId;
     std::unique_ptr<nebula::HostAddr> leader{nullptr};
@@ -191,6 +225,11 @@ struct ScanEdgeResponse {
 
     bool operator==(const ScanEdgeResponse &rhs) const;
 
+    ResponseCommon& set_result(ResponseCommon&& result_) {
+        result = std::move(result_);
+        return result;
+    }
+
     ResponseCommon result;
     nebula::DataSet edgeData;
     bool hasNext;
@@ -210,6 +249,11 @@ struct ScanVertexResponse {
     }
 
     bool operator==(const ScanVertexResponse &rhs) const;
+
+    ResponseCommon& set_result(ResponseCommon&& result_) {
+        result = std::move(result_);
+        return result;
+    }
 
     ResponseCommon result;
     nebula::DataSet vertexData;
